@@ -49,17 +49,10 @@ public class auto extends LinearOpMode {
 
         waitForStart();
 //        jiaoduServo.setPosition(jiaoduservoUp);
+        chelunServo.setPower(-1);
 
         Actions.runBlocking(new SequentialAction(drive.actionBuilder(beginPose)
-                        //strafeTo
-                        //.splineToLinearHeading()
 
-//                .stopAndAdd(new ParallelAction(drive.actionBuilder(beginPose)
-//                        .strafeTo(new Vector2d(-26, 0))
-//                        .stopAndAdd(new shengjiangguaSample())
-//                        .build()
-//                ))
-                // ------------------------------------------------------
                         .stopAndAdd(new shengguaSample())
                         .strafeTo(new Vector2d(-30, 0))
 
@@ -69,7 +62,7 @@ public class auto extends LinearOpMode {
 
                         .stopAndAdd(new bifangdaozuixia())
                         .splineToLinearHeading(new Pose2d(-5,20,Math.PI),0)
-                .strafeTo(new Vector2d(2,20))
+                .strafeTo(new Vector2d(1.5,20))
                         .stopAndAdd(new naSample())
                 .splineToLinearHeading(new Pose2d(-30,5,0),Math.PI)
                         .stopAndAdd(new jiangguaSample())
@@ -81,47 +74,30 @@ public class auto extends LinearOpMode {
 
 
 //-------------------------------------------------------------------
-                        .splineToLinearHeading(new Pose2d(-28, 15, Math.PI*0.6), 0)
+                        .splineToLinearHeading(new Pose2d(-25, 18, Math.PI*0.66), 0)
                 .stopAndAdd(new xiSample())
-                .splineToLinearHeading(new Pose2d(-28,25,Math.PI*0.2),Math.PI*0.6)
+                .splineToLinearHeading(new Pose2d(-28,25,Math.PI*0.2),Math.PI*0.66)
 //                .turnTo(Math.PI*0.2)
                         .stopAndAdd(new tuSample())
                 //18s
                 //-----------------------------------------------------------
                 .stopAndAdd(new shouhuishengsuobi())
                      .splineToLinearHeading(new Pose2d(-5,20,Math.PI),Math.PI*0.3)
-                .strafeTo(new Vector2d(2,20))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(1.5,20))
                         .stopAndAdd(new naSample())
-                .splineToLinearHeading(new Pose2d(-30,10,0),Math.PI)
+                .splineToLinearHeading(new Pose2d(-20,10,0),Math.PI)
+                .strafeTo(new Vector2d(-30,10))
                         .stopAndAdd(new jiangguaSample())
 //        **                .strafeTo(new Vector2d(-28,10))
-                        .strafeTo(new Vector2d(-20,10))
+                .splineToLinearHeading(new Pose2d(-20,10,Math.PI),0)
+
 
                 .stopAndAdd(new bifangdaozuixia())
-                        //---------------------------------------------------------------------------------------
-//                .splineToLinearHeading(new Pose2d(-19,23,Math.PI*0.64),Math.PI*0.26)
-//                .stopAndAdd(new xidierkuaiSample())
-//                .turnTo(Math.PI*0.3)
-//                .stopAndAdd(new tuSample())
+                        //
 
-                //---------------------------------------------------------------------
-//                .splineToLinearHeading(new Pose2d(-19,32,Math.PI*.7),Math.PI*.4)
-//                .stopAndAdd(new xiSample())
-//                        .turnTo(Math.PI*.5)
-//                .stopAndAdd(new tuSample())
 
-                //--------------------------------------------------------------------------
 //
-//
-//
-//                        .splineToLinearHeading(new Pose2d(-5,20,Math.PI),0)
-//                        .strafeTo(new Vector2d(5,20))
-//                        .stopAndAdd(new naSample())
-//                        .splineToLinearHeading(new Pose2d(-30,15,0),Math.PI)
-//                        .stopAndAdd(new jiangguaSample())
-//                        .strafeTo(new Vector2d(-20, 5))
-//                        .stopAndAdd(new bifangdaozuixia())
-                        //---------------------------------------------------------------
                 .strafeTo(new Vector2d(0,30))
                         .build())
 
@@ -144,33 +120,14 @@ public class auto extends LinearOpMode {
             long startTime = System.currentTimeMillis();
             while (true) {
                 long currentTime = System.currentTimeMillis() - startTime;
-//                chelunServo.setPower(-1);
-//                shengsuobi.setTargetPosition(2100);
-//                shengsuobi.setPower(1);
-//                shengsuobi.setMode(RunMode.RUN_TO_POSITION);
-//                if (currentTime > 5000) {
-//                    return false;
-//                }
+//
                 chelunServo.setPower(-1);
-                shengsuobi.setTargetPosition(2100);
+                shengsuobi.setTargetPosition(1900);
                 shengsuobi.setPower(1);
                 shengsuobi.setMode(RunMode.RUN_TO_POSITION);
                 jiaoduServo.setPosition(jiaoduservoDown);
-//                if((currentTime > 1600)&&(currentTime < 2000)){
-//                    jiaoduServo.setPosition(jiaoduservoDown);
-//                }else{
-//                    jiaoduServo.setPosition(jiaoduservoPing);
-//                }
-                //-------------------------------------------------
-//                if(currentTime < 2000){
-//                    jiaoduServo.setPosition(jiaoduservoDown);
-//                }else if(currentTime<2100){
-//                    jiaoduServo.setPosition(jiaoduservoPing);
-//
-//                }else {
-//                    return false;
-//                }
-                if(currentTime > 1800){
+
+                if(currentTime > 2500){
                     jiaoduServo.setPosition(jiaoduservoPing);
                     return false;
                 }
@@ -184,6 +141,13 @@ public class auto extends LinearOpMode {
         }
 
     }
+
+
+
+
+
+//
+
 
     public class shouhuishengsuobi implements Action {
 
@@ -235,6 +199,7 @@ public class auto extends LinearOpMode {
                 chelunServo.setPower(1);
 
                 if(currentTime > 600){
+                    chelunServo.setPower(0);
                     return false;
                 }
 

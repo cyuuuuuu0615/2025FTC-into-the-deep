@@ -29,19 +29,35 @@ public class Red extends LinearOpMode {
 
     long chelunIn= -1;
     long chelunOut= 1;
-
+    boolean sheng = false;
+    boolean jiang = false;
+    boolean xiadaozuixia = false;
+    boolean reset = false;
     boolean get = false;
     boolean input = false;
     boolean output = false;
+    boolean saoSemple = false;
     long startTime1 = 0;
     long currentTime1 = 0;
     long startTime2 = 0;
     long currentTime2 = 0;
+    long startTime3 = 0;
+    long currentTime3 = 0;
+    long startTime4 = 0;
+    long currentTime4 = 0;
+    long startTime5 = 0;
+    long currentTime5 = 0;
+    long startTime6 = 0;
+    long currentTime6 = 0;
+    long startTime7 = 0;
+    long currentTime7 = 0;
+    long shengsuobiPower = 0;
 
 
     public void runOpMode(){
         //color = hardwareMap.colorSensor.get("color");
         Servo jiaoduServo = hardwareMap.get(Servo.class, "servo0");
+        Servo saoServo = hardwareMap.get(Servo.class, "servo4");
         CRServo chelunServo = hardwareMap.get(CRServo.class, "servo5");
         DcMotor frontLeftMotor = hardwareMap.get(DcMotor.class, "motor1");
         DcMotor backLeftMotor = hardwareMap.get(DcMotor.class, "motor2");
@@ -74,7 +90,7 @@ public class Red extends LinearOpMode {
         int vlp = shengjiangbi.getCurrentPosition();
 
         int h_upper_limit = 2000;
-        int h_lower_limit = 0;
+        int h_lower_limit = 10;
         int v_upper_limit = 3000;
         int v_lower_limit = 0;
         double jiaoduServoUP = 0;
@@ -86,7 +102,7 @@ public class Red extends LinearOpMode {
 
 
       //  guaSampleClaw.setPosition(0.3);
-        boolean claw_open = false;
+        saoServo.setPosition(0.4);
         while(opModeIsActive()){
 
 
@@ -115,26 +131,77 @@ public class Red extends LinearOpMode {
                 backRightPower  /= power + Math.abs(rx);
             }
 
-
-
-            if(input){
-                if(get){
-                    currentTime1 = System.currentTimeMillis() - startTime1;
-                    jiaoduServo.setPosition(jiaoduServoUP);
-                    shengsuobi.setTargetPosition(0);
-                    shengsuobi.setPower(-1);
-                    shengsuobi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    hlp = shengsuobi.getCurrentPosition();
-                    chelunServo.setPower(chelunIn);
-                    if(currentTime1 >2000){
-                        get = false;
-                    }
-
-                }else{
-                    chelunServo.setPower(chelunIn);
+            if(sheng){
+                currentTime3 = System.currentTimeMillis() - startTime3;
+                shengjiangbi.setTargetPosition(2034);
+                shengjiangbi.setPower(1);
+                shengjiangbi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                vlp = shengjiangbi.getCurrentPosition();
+                if(currentTime3>1000){
+                    sheng = false;
                 }
             }
 
+            if(jiang){
+                currentTime4 = System.currentTimeMillis() - startTime4;
+                shengjiangbi.setTargetPosition(900);
+                shengjiangbi.setPower(-1);
+                shengjiangbi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                vlp = shengjiangbi.getCurrentPosition();
+                if(currentTime4>800){
+                    jiang = false;
+                }
+            }
+
+            if(reset){
+                currentTime6 = System.currentTimeMillis() - startTime6;
+                shengjiangbi.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                shengjiangbi.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                vlp = shengjiangbi.getCurrentPosition();
+                reset = false;
+
+
+            }
+
+            if(xiadaozuixia){
+                currentTime5 = System.currentTimeMillis() - startTime5;
+                shengjiangbi.setTargetPosition(0);
+                shengjiangbi.setPower(-1);
+                shengjiangbi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                vlp = shengjiangbi.getCurrentPosition();
+                if(currentTime5>500){
+                    xiadaozuixia = false;
+                }
+            }
+
+            if (saoSemple) {
+                currentTime7 = System.currentTimeMillis() - startTime7;
+                if(currentTime7<500){
+                    saoServo.setPosition(1);
+                }else if(currentTime7<700){
+                    saoServo.setPosition(0.4);
+                    saoSemple = false;
+                }
+            }
+
+
+
+
+            if(input){
+                chelunServo.setPower(chelunIn);
+            }
+            if(get) {
+                currentTime1 = System.currentTimeMillis() - startTime1;
+                jiaoduServo.setPosition(jiaoduServoUP);
+                shengsuobi.setTargetPosition(0);
+                shengsuobi.setPower(-1);
+                shengsuobi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                hlp = shengsuobi.getCurrentPosition();
+                chelunServo.setPower(chelunIn);
+                if (currentTime1 > 1200) {
+                    get = false;
+                }
+            }
             if(output){
                 currentTime2 = System.currentTimeMillis() - startTime2;
                 if(currentTime2 <1000){
@@ -148,6 +215,31 @@ public class Red extends LinearOpMode {
 
             if(!input && !output){
                 chelunServo.setPower(0);
+            }
+
+            if(gamepad1.left_bumper){
+                sheng = true;
+                startTime3 = System.currentTimeMillis();
+            }
+
+            if(gamepad1.right_bumper){
+                jiang = true;
+                startTime4 = System.currentTimeMillis();
+            }
+
+            if(gamepad1.b){
+                xiadaozuixia = true;
+                startTime5 = System.currentTimeMillis();
+            }
+
+            if(gamepad1.x){
+                reset = true;
+                startTime6 = System.currentTimeMillis();
+            }
+
+            if(gamepad1.a){
+                saoSemple = true;
+                startTime7 = System.currentTimeMillis();
             }
 
             if(gamepad2.left_bumper){
@@ -168,38 +260,26 @@ public class Red extends LinearOpMode {
             if(gamepad2.a){
                 jiaoduServo.setPosition(jiaoduServoUP);
             }
-//            if(gamepad2.b){
-//                jiaoduServo.setPosition(jiaoduServoDOWN);
-//            }
+
+
             if(gamepad2.b){
                 jiaoduServo.setPosition(jiaoduServoPING);
             }
+
 ////
-//            jiaoduServo.setPosition(gamepad2.left_trigger);
+//            saoServo.setPosition(gamepad2.left_stick_y);
 
 
-           // if(gamepad1.left_bumper){
-         //       chelunServo.setPower(-1);
-        //    }
-
-            //if(gamepad1.x){
-          //      chelunServo.setPower(0);
-         //   }
+//            if(gamepad1.left_bumper){
+//                chelunServo.setPower(-1);
+//            }
 //
-//            if(input){
-//                xiSample.setPower(1);
-////             //   if(color.blue()<00){
-////               //     xiSample.setPower(1);
-////               // }else{
-////               //     input = false;
-////              //  }
-//            }else{
-//                xiSample.setPower(0);
+//            if(gamepad1.x){
+//                chelunServo.setPower(0);
 //            }
 
-     //       if(gamepad1.right_bumper){
-        //        chelunServo.setPower(1);
-        //    }
+
+
 
             if(!get) {
                 if (((gamepad2.left_trigger + gamepad2.right_trigger) == 0)) {
@@ -210,7 +290,8 @@ public class Red extends LinearOpMode {
                     hlp = shengsuobi.getCurrentPosition();
                     shengsuobi.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     if (shengsuobi.getCurrentPosition() <= h_upper_limit && shengsuobi.getCurrentPosition() >= h_lower_limit) {
-                        shengsuobi.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
+                        shengsuobi.setPower(handlerange(gamepad2.left_trigger - gamepad2.right_trigger,1,-1));
+
                     } else if (shengsuobi.getCurrentPosition() >= h_upper_limit) {
                         shengsuobi.setPower(handlerange(gamepad2.left_trigger - gamepad2.right_trigger, 0, -1));
                     } else if (shengsuobi.getCurrentPosition() <= h_lower_limit) {
@@ -220,23 +301,25 @@ public class Red extends LinearOpMode {
             }
 
 
-
-            if(gamepad1.left_trigger + gamepad1.right_trigger == 0){
-                shengjiangbi.setTargetPosition(vlp);
-                shengjiangbi.setPower(1);
-                shengjiangbi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }else{
-                vlp = shengjiangbi.getCurrentPosition();
-                shengjiangbi.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if(!sheng && !jiang && !xiadaozuixia && !reset){
+                if(gamepad1.left_trigger + gamepad1.right_trigger == 0){
+                    shengjiangbi.setTargetPosition(vlp);
+                    shengjiangbi.setPower(1);
+                    shengjiangbi.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }else{
+                    vlp = shengjiangbi.getCurrentPosition();
+                    shengjiangbi.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //                shengjiangbi.setPower(-gamepad2.left_stick_y);
-                if(vlp <= v_upper_limit && vlp >= v_lower_limit){
-                    shengjiangbi.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
-                }else if(vlp >= v_upper_limit){
-                    shengjiangbi.setPower(handlerange(gamepad1.left_trigger - gamepad1.right_trigger,-1,0));
-                } else if (vlp <= v_lower_limit) {
-                    shengjiangbi.setPower(handlerange(gamepad1.left_trigger - gamepad1.right_trigger,1,0));
+//                    if(vlp <= v_upper_limit && vlp >= v_lower_limit){
+                        shengjiangbi.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
+//                    }else if(vlp >= v_upper_limit){
+//                        shengjiangbi.setPower(handlerange(gamepad1.left_trigger - gamepad1.right_trigger,-1,0));
+//                    } else if (vlp <= v_lower_limit) {
+//                        shengjiangbi.setPower(handlerange(gamepad1.left_trigger - gamepad1.right_trigger,1,0));
+//                    }
                 }
             }
+
 //            if(shengjiangbi.getCurrentPosition()>=v_upper_limit){
 //                shengjiangbi.setPower(handlerange(gamepad2.left_stick_y,0,-1));
 //            }else{
@@ -282,11 +365,12 @@ public class Red extends LinearOpMode {
             telemetry.addData("horizontal shengsuobi",shengsuobi.getCurrentPosition());
             telemetry.addData("vertical shengjiangbi",shengjiangbi.getCurrentPosition());
             telemetry.addData("jiaodu servo",jiaoduServo.getPosition());
-            telemetry.addData("chelunServo",chelunServo.getPower());
+            telemetry.addData("chelun servo",chelunServo.getPower());
             telemetry.addData("input",input);
             telemetry.addData("get",get);
             telemetry.addData("output",output);
-
+            telemetry.addData("sao servo",saoServo.getPosition());
+            telemetry.addData("saoSample",saoSemple);
 
             telemetry.update();
         }
